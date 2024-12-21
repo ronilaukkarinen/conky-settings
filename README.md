@@ -2,7 +2,7 @@
 
 My opinionated conky settings.
 
-![Screenshot from 2024-12-21 14-13-13](https://github.com/user-attachments/assets/e9cd3733-225b-4aed-a138-b8b1e9fdb7b5)
+![image](https://github.com/user-attachments/assets/2d08a6a2-3094-4d97-8838-5f302951892f)
 
 ## Getting started
 
