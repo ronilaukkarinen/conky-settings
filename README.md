@@ -6,11 +6,16 @@ My opinionated conky settings.
 
 ## Features
 
-- Displays top 50 processes
-- Displays the amount of Better Stack incidents
-- Displays disk usage for remote server
-- Displays now playing song from Last.fm
-- Displays today's tasks from Todoist
+- Top 50 processes
+- The amount of Better Stack incidents
+- Disk usage for remote server
+- Now playing song from Last.fm
+- Today's tasks from Todoist
+- NextDNS status
+- Network speed
+- CPU usage
+- RAM usage
+- Swap usage
 
 ## Getting started
 
