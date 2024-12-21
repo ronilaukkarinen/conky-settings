@@ -20,6 +20,8 @@ git clone https://github.com/ronilaukkarinen/conky-settings.git ~/.config/conky
 sudo chmod +x $HOME/.config/conky/top-processes.sh
 ```
 
+Update .env file with your credentials and edit conky.conf to your liking.
+
 ## Conky
 
 ```bash
