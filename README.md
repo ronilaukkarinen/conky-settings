@@ -13,6 +13,8 @@ sudo apt update
 sudo apt install conky-all
 ```
 
+Install [Mona Sans](https://github.com/github/mona-sans).
+
 Clone this repository to `$HOME/.config/conky`.
 
 ```bash
