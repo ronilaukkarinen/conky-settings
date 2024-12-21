@@ -12,6 +12,7 @@ My opinionated conky settings.
 - Now playing song from Last.fm
 - Today's tasks from Todoist
 - NextDNS status
+- Amount of trackers blocked today
 - Network speed
 - CPU usage
 - RAM usage
