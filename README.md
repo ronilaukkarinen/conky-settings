@@ -4,6 +4,14 @@ My opinionated conky settings.
 
 ![image](https://github.com/user-attachments/assets/2d08a6a2-3094-4d97-8838-5f302951892f)
 
+## Features
+
+- Displays top 50 processes
+- Displays the amount of Better Stack incidents
+- Displays disk usage for remote server
+- Displays now playing song from Last.fm
+- Displays today's tasks from Todoist
+
 ## Getting started
 
 Install [conky](https://github.com/brndnmtthws/conky).
