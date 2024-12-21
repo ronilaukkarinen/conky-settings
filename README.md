@@ -20,6 +20,7 @@ git clone https://github.com/ronilaukkarinen/conky-settings.git ~/.config/conky
 sudo chmod +x $HOME/.config/conky/top-processes.sh
 sudo chmod +x $HOME/.config/conky/betterstack-incidents.sh
 sudo chmod +x $HOME/.config/conky/disk-quota-remote.sh
+sudo chmod +x $HOME/.config/conky/lastfm.sh
 ```
 
 Update .env file with your credentials and edit conky.conf to your liking.
