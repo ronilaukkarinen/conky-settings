@@ -1,7 +1,7 @@
 #!/bin/bash
 
 CACHE_FILE="/tmp/remote_disk_quota"
-CACHE_MAX_AGE=3600
+CACHE_MAX_AGE=300
 ENV_FILE="$HOME/.config/conky/.env"
 
 # Check if .env file exists
