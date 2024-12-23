@@ -23,30 +23,30 @@ fi
 if [ -f "$CACHE_FILE" ] && [ $(($(date +%s) - $(stat -c %Y "$CACHE_FILE"))) -lt $CACHE_MAX_AGE ]; then
     cat "$CACHE_FILE"
 else
-    # Fetch the current track
-    response=$(curl -s "http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=$LASTFM_USERNAME&api_key=$LASTFM_API_KEY&format=json")
+  # Fetch the current track
+  response=$(curl -s "http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=$LASTFM_USERNAME&api_key=$LASTFM_API_KEY&format=json")
 
-    # Extract artist and track name separately
-    artist=$(echo "$response" | jq -r '.recenttracks.track[0].artist."#text"')
-    track=$(echo "$response" | jq -r '.recenttracks.track[0].name')
+  # Extract artist and track name separately
+  artist=$(echo "$response" | jq -r '.recenttracks.track[0].artist."#text"')
+  track=$(echo "$response" | jq -r '.recenttracks.track[0].name')
 
-    # URL encode artist and track names
-    artist_encoded=$(echo -n "$artist" | jq -sRr @uri)
-    track_encoded=$(echo -n "$track" | jq -sRr @uri)
+  # URL encode artist and track names
+  artist_encoded=$(echo -n "$artist" | jq -sRr @uri)
+  track_encoded=$(echo -n "$track" | jq -sRr @uri)
 
-    # Get track info including playcount
-    track_info=$(curl -s "http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=$LASTFM_API_KEY&artist=${artist_encoded}&track=${track_encoded}&username=$LASTFM_USERNAME&format=json")
-    playcount=$(echo "$track_info" | jq -r '.track.userplaycount | select(. != null) // "0"')
+  # Get track info including playcount
+  track_info=$(curl -s "http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=$LASTFM_API_KEY&artist=${artist_encoded}&track=${track_encoded}&username=$LASTFM_USERNAME&format=json")
+  playcount=$(echo "$track_info" | jq -r '.track.userplaycount | select(. != null) // "0"')
 
-    # Ensure playcount is set to 0 if empty or null
-    if [ -z "$playcount" ]; then
-        playcount="0"
-    fi
+  # Ensure playcount is set to 0 if empty or null
+  if [ -z "$playcount" ]; then
+      playcount="0"
+  fi
 
-    # Format output with artist/track on first line and plays on second line
-    current_track="$artist - $track\nHistorical plays: $playcount"
+  # Format output with artist/track on first line and plays on second line
+  current_track="$artist - $track\nHistorical plays: $playcount"
 
-    # Save to cache file
-    echo -e "$current_track" > "$CACHE_FILE"
-    echo -e "$current_track"
+  # Save to cache file
+  echo -e "$current_track" > "$CACHE_FILE"
+  echo -e "$current_track"
 fi

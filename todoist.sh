@@ -23,26 +23,26 @@ fi
 if [ -f "$CACHE_FILE" ] && [ $(($(date +%s) - $(stat -c %Y "$CACHE_FILE"))) -lt $CACHE_MAX_AGE ]; then
   cat "$CACHE_FILE"
 else
-    # Fetch tasks from Todoist API
-    response=$(curl -s \
-      -H "Authorization: Bearer $TODOIST_API_TOKEN" \
-      "https://api.todoist.com/rest/v2/tasks?filter=(today|overdue)&sort_by=due")
+  # Fetch tasks from Todoist API
+  response=$(curl -s \
+    -H "Authorization: Bearer $TODOIST_API_TOKEN" \
+    "https://api.todoist.com/rest/v2/tasks?filter=(today|overdue)&sort_by=due")
 
-    # Get total task count for tasks that actually have due dates
-    total_tasks=$(echo "$response" | jq '[.[] | select(.due != null)] | length')
+  # Get total task count for tasks that actually have due dates
+  total_tasks=$(echo "$response" | jq '[.[] | select(.due != null)] | length')
 
-    # Output total tasks and tasks to cache file
-    {
-      if [ "$total_tasks" -eq 1 ]; then
-        echo "1 task left to do."
-      else
-        echo "${total_tasks} tasks left to do."
-      fi
-      echo ""
-      echo "$response" | jq -r '.[] | select(.due != null) | .content' | while read -r task; do
-        echo "• ${task}"
-      done
-    } > "$CACHE_FILE"
+  # Output total tasks and tasks to cache file
+  {
+    if [ "$total_tasks" -eq 1 ]; then
+      echo "1 task left to do."
+    else
+      echo "${total_tasks} tasks left to do."
+    fi
+    echo ""
+    echo "$response" | jq -r '.[] | select(.due != null) | .content' | while read -r task; do
+      echo "• ${task}"
+    done
+  } > "$CACHE_FILE"
 
-    cat "$CACHE_FILE"
+  cat "$CACHE_FILE"
 fi
