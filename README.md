@@ -36,6 +36,7 @@ sudo chmod +x $HOME/.config/conky/betterstack-incidents.sh
 sudo chmod +x $HOME/.config/conky/disk-quota-remote.sh
 sudo chmod +x $HOME/.config/conky/lastfm.sh
 sudo chmod +x $HOME/.config/conky/todoist.sh
+sudo chmod +x $HOME/.config/conky/network-latency.sh
 ```
 
 Update .env file with your credentials and edit conky.conf to your liking.
