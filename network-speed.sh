@@ -7,11 +7,11 @@ CACHE_MAX_AGE=900
 format_output() {
   while IFS= read -r line; do
     if [[ $line == *"Ping:"* ]]; then
-      echo "Internet Ping: ${line#*: }"
+      echo "Internet ping: ${line#*: }"
     elif [[ $line == *"Download:"* ]]; then
-      echo "Download Speed: ${line#*: }"
+      echo "Download speed: ${line#*: }"
     elif [[ $line == *"Upload:"* ]]; then
-      echo "Upload Speed: ${line#*: }"
+      echo "Upload speed: ${line#*: }"
     fi
   done
 }
