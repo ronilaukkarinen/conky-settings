@@ -2,10 +2,12 @@
 
 CACHE_FILE="/tmp/irc_lastlog"
 TIMESTAMP_CACHE="/tmp/irc_lastlog_timestamp"
+WORDS_CACHE="/tmp/irc_lastlog_words"
 CACHE_MAX_AGE=1
 LASTLOG_URL="https://botit.pulina.fi/lastlog.log"
 INDENT="                "
 NICK_WIDTH=15
+DEBUG_LOG="/tmp/irc_lastlog_debug.log"
 
 # Function to calculate relative time
 get_relative_time() {
@@ -100,17 +102,84 @@ format_message() {
 
   # Format any remaining text
   if [ -n "$line" ]; then
-    echo "$line" | fmt -w 41
+    echo "$line" | fmt -w 32
   fi
 }
 
 # Get and cache the last timestamp
 if [ ! -f "$TIMESTAMP_CACHE" ] || [ $(($(date +%s) - $(stat -c %Y "$TIMESTAMP_CACHE"))) -gt $CACHE_MAX_AGE ]; then
-  last_timestamp=$(curl -s "$LASTLOG_URL" | tail -n 1 | cut -d' ' -f1)
+  last_line=$(curl -s "$LASTLOG_URL" | tail -n 1)
+  last_timestamp=$(echo "$last_line" | cut -d' ' -f1)
+  last_nick=$(echo "$last_line" | grep -o '<[^>]*>' | sed 's/[<>]//g')
+  last_message=$(echo "$last_line" | cut -d' ' -f2- | sed 's/^<[^>]*> //')
+
+  # Find the last day change and count words since then
+  {
+    echo "=== $(date) ==="
+    echo "Fetching messages..."
+
+    # Get all messages and find the last day change (23:59 to 00:00)
+    all_messages=$(curl -s "$LASTLOG_URL")
+
+    echo "Finding messages since last 00:00..."
+    # Find the last day change by looking from bottom up
+    day_messages=$(echo "$all_messages" | tac | awk '
+      /^[0-2][0-9]:[0-5][0-9] / {
+        if ($1 ~ /^00:/) {
+          print NR
+          exit
+        }
+      }
+    ')
+
+    if [ -n "$day_messages" ]; then
+      # Convert line number from bottom to line number from top
+      total_lines=$(echo "$all_messages" | wc -l)
+      day_start=$((total_lines - day_messages + 1))
+      echo "Found messages since line $day_start"
+
+      echo "Sample of today's messages:"
+      echo "$all_messages" | tail -n +"$day_start" | head -n 5
+
+      echo "Looking for timestamps:"
+      echo "Sample timestamps:"
+      echo "$all_messages" | tail -n +"$day_start" | awk '{print $1}' | head -n 5
+
+      total_words=$(echo "$all_messages" | tail -n +"$day_start" | \
+        awk -F' <[^>]*> ' '
+          /^[0-2][0-9]:[0-5][0-9] </ {
+            if (NF > 1) print $2
+          }
+        ' | \
+        grep -v "\(liittyi\|poistui\|Quit\|Ping\|timeout\|Leaving\)" | \
+        tr ' ' '\n' | \
+        grep -v '^[[:space:]]*$' | \
+        grep -v '^[0-9]*$' | \
+        grep -v '^https\?://' | \
+        grep -v '^[!@#$%^&*()_+=<>?/|\\;:,.-]' | \
+        wc -w)
+    else
+      echo "No day change found"
+      total_words=0
+    fi
+
+    echo "Words since last day change: $total_words"
+    echo "Raw message sample: $last_message"
+  } > "$DEBUG_LOG"
+
   # Convert IRC timestamp to Unix timestamp
-  unix_timestamp=$(date -d "$last_timestamp" +%s)
+  unix_timestamp=$(date -d "$(date +%Y-%m-%d) $last_timestamp" +%s)
   relative_time=$(get_relative_time "$unix_timestamp")
-  echo "Last message sent $relative_time" > "$TIMESTAMP_CACHE"
+
+  # Save to separate cache files
+  {
+    printf "Last message %s\nby %s: \"%s\"\n" "$relative_time" "$last_nick" "$last_message" | fmt -w 70
+  } > "$TIMESTAMP_CACHE"
+
+  # Save word count for progress bar
+  printf "Words today: %d/20000\n" "$total_words" > "$WORDS_CACHE"
+  # Save raw number for Conky's execbar
+  printf "%d" "$total_words" > "${WORDS_CACHE}.count"
 fi
 
 # Check if message cache exists and is less than 1 minute old
