@@ -81,7 +81,7 @@ format_message() {
     if [[ "$word" =~ ^https?:// ]]; then
       # If we have accumulated text, format it
       if [ -n "$line" ]; then
-        echo "$line" | fmt -w 41
+        echo "$line" | fmt -w 32
         line=""
       fi
       # Truncate URL if it's too long
@@ -173,7 +173,7 @@ if [ ! -f "$TIMESTAMP_CACHE" ] || [ $(($(date +%s) - $(stat -c %Y "$TIMESTAMP_CA
 
   # Save to separate cache files
   {
-    printf "Last message %s\nby %s: \"%s\"\n" "$relative_time" "$last_nick" "$last_message" | fmt -w 70
+    printf "Last message %s\nby %s: \"%s\"\n" "$relative_time" "$last_nick" "$last_message" | fmt -w 40
   } > "$TIMESTAMP_CACHE"
 
   # Save word count for progress bar
