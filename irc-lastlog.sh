@@ -177,7 +177,7 @@ if [ ! -f "$TIMESTAMP_CACHE" ] || [ $(($(date +%s) - $(stat -c %Y "$TIMESTAMP_CA
   } > "$TIMESTAMP_CACHE"
 
   # Save word count for progress bar
-  printf "Words today: %d/20000\n" "$total_words" > "$WORDS_CACHE"
+  printf "Words today: %d/10000\n" "$total_words" > "$WORDS_CACHE"
   # Save raw number for Conky's execbar
   printf "%d" "$total_words" > "${WORDS_CACHE}.count"
 fi
