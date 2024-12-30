@@ -18,6 +18,7 @@ My opinionated conky settings.
 - CPU usage
 - RAM usage
 - Swap usage
+- IRC lastlog
 
 ## Getting started
 
@@ -40,6 +41,7 @@ sudo chmod +x $HOME/.config/conky/todoist.sh
 sudo chmod +x $HOME/.config/conky/network-latency.sh
 sudo chmod +x $HOME/.config/conky/network-speed.sh
 sudo chmod +x $HOME/.config/conky/dns-latency.sh
+sudo chmod +x $HOME/.config/conky/irc-lastlog.sh
 ```
 
 Update .env file with your credentials and edit conky.conf to your liking.
