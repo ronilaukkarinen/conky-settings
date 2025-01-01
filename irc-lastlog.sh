@@ -141,7 +141,7 @@ fi
 
 # Get and cache the last timestamp
 if [ ! -f "$TIMESTAMP_CACHE" ] || [ $(($(date +%s) - $(stat -c %Y "$TIMESTAMP_CACHE"))) -gt $CACHE_MAX_AGE ]; then
-  last_line=$(curl -s "$LASTLOG_URL" | tail -n 1)
+  last_line=$(curl -s "$LASTLOG_URL" | grep -v "liittyi\|poistui\|Quit\|Ping\|timeout\|Leaving" | tail -n 1)
   last_timestamp=$(echo "$last_line" | cut -d' ' -f1)
   last_nick=$(echo "$last_line" | grep -o '<[^>]*>' | sed 's/[<>]//g')
   last_message=$(echo "$last_line" | cut -d' ' -f2- | sed 's/^<[^>]*> //')
