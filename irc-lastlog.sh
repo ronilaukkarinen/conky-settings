@@ -8,6 +8,8 @@ LASTLOG_URL="https://botit.pulina.fi/lastlog.log"
 INDENT="                "
 NICK_WIDTH=15
 DEBUG_LOG="/tmp/irc_lastlog_debug.log"
+TODAY=$(date +%Y-%m-%d)
+DAILY_LOG_URL="https://www.pulina.fi/pulina-days/pul-${TODAY}.log"
 
 # Function to calculate relative time
 get_relative_time() {
@@ -105,6 +107,37 @@ format_message() {
     echo "$line" | fmt -w 32
   fi
 }
+
+# Function to count words from daily log
+count_daily_words() {
+  # Fetch daily log and count actual chat messages
+  curl -s "$DAILY_LOG_URL" | \
+    awk '
+      /^[0-2][0-9]:[0-5][0-9] <[^>]*>/ {
+        # Get everything after the nick
+        sub(/^[0-2][0-9]:[0-5][0-9] <[^>]*> /, "")
+        # Skip system messages
+        if (!/^(liittyi|poistui|Quit|Ping|timeout|Leaving)/) {
+          # Remove URLs
+          gsub(/https?:\/\/[^ ]*/, "")
+          # Count words
+          words += NF
+        }
+      }
+      END { print words }
+    '
+}
+
+# Update the word count cache
+if [ ! -f "$WORDS_CACHE" ] || [ $(($(date +%s) - $(stat -c %Y "$WORDS_CACHE"))) -gt $CACHE_MAX_AGE ]; then
+  total_words=$(count_daily_words)
+  : "${total_words:=0}"  # Default to 0 if empty
+
+  # Save word count for display
+  printf "Words today: %d/10000\n" "$total_words" > "$WORDS_CACHE"
+  # Save percentage for Conky's execbar
+  echo "$((total_words * 100 / 10000))" > "${WORDS_CACHE}.count"
+fi
 
 # Get and cache the last timestamp
 if [ ! -f "$TIMESTAMP_CACHE" ] || [ $(($(date +%s) - $(stat -c %Y "$TIMESTAMP_CACHE"))) -gt $CACHE_MAX_AGE ]; then
