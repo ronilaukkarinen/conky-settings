@@ -42,6 +42,7 @@ sudo chmod +x $HOME/.config/conky/network-latency.sh
 sudo chmod +x $HOME/.config/conky/network-speed.sh
 sudo chmod +x $HOME/.config/conky/dns-latency.sh
 sudo chmod +x $HOME/.config/conky/irc-lastlog.sh
+sudo chmod +x $HOME/.config/conky/temperatures.sh
 ```
 
 Update .env file with your credentials and edit conky.conf to your liking.
