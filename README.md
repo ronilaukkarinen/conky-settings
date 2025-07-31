@@ -34,6 +34,7 @@ Clone this repository to `$HOME/.config/conky`.
 ```bash
 git clone https://github.com/ronilaukkarinen/conky-settings.git ~/.config/conky
 sudo chmod +x $HOME/.config/conky/top-processes.sh
+sudo chmod +x $HOME/.config/conky/top-processes-ram.sh
 sudo chmod +x $HOME/.config/conky/betterstack-incidents.sh
 sudo chmod +x $HOME/.config/conky/disk-quota-remote.sh
 sudo chmod +x $HOME/.config/conky/lastfm.sh
